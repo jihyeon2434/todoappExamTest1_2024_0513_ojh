@@ -2,16 +2,24 @@
 
 import * as React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Button, Box, AppBar, Toolbar } from '@mui/material';
+import { Button, Box, AppBar, Toolbar, Snackbar, Alert as MuiAlert } from '@mui/material';
 import theme from './theme';
-import { MdDeleteForever } from 'react-icons/md';
 import { FaBars } from 'react-icons/fa';
+
+const Alert = React.forwardRef((props, ref) => {
+  return <MuiAlert {...props} ref={ref} variant="filled" />;
+});
+
 export default function App() {
+  const [open, setOpen] = React.useState(false);
+
+  const alertRef = React.useRef(null);
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <AppBar position="fixed">
-          <Toolbar className="tw-justify-center">
+          <Toolbar>
             <div className="tw-flex-1">
               <FaBars className="tw-cursor-pointer" />
             </div>
@@ -26,14 +34,28 @@ export default function App() {
           </Toolbar>
         </AppBar>
         <Toolbar />
-        툴바를 '/'바로 붙이면 뒷 배경영역을 차지해서 그밑에 나오게 할 수있다. fixed라서
-        툴바'/'설정안하면 NOIE영역 뒤에 글이 써짐.
-        <section className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequuntur quibusdam nesciunt,
-          autem reiciendis eaque harum nihil veritatis adipisci. Quod similique doloribus harum
-          repudiandae placeat. Explicabo tempore illum consectetur. Sunt, aliquid.
+        <section className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-text-[5rem]">
+          section
         </section>
       </ThemeProvider>
+      <section>
+        <Button onClick={() => setOpen(true)}>Open Snackbar</Button>
+        <Alert severity="error" varient="filled">
+          게시물이 삭제되었습니다.
+        </Alert>
+        <Alert severity="success" varient="outlined">
+          This is a success msg!!!!!
+        </Alert>
+        <Snackbar
+          open={open}
+          autoHideDuration={2000}
+          onClose={() => setOpen(false)}
+          message="Note archived">
+          <Alert ref={alertRef} severity="warning">
+            게시물이 삭제됨
+          </Alert>
+        </Snackbar>
+      </section>
     </>
   );
 }
