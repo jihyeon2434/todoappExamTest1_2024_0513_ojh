@@ -2,7 +2,16 @@
 
 import * as React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Button, Box, AppBar, Toolbar, Snackbar, Alert as MuiAlert } from '@mui/material';
+import {
+  Button,
+  Box,
+  AppBar,
+  Toolbar,
+  Snackbar,
+  Alert as MuiAlert,
+  Backdrop,
+  CircularProgress,
+} from '@mui/material';
 import theme from './theme';
 import { FaBars } from 'react-icons/fa';
 
@@ -38,9 +47,15 @@ export default function App() {
           section
         </section>
       </ThemeProvider>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+        onClick={() => setOpen(false)}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <section>
         <Button onClick={() => setOpen(true)}>Open Snackbar</Button>
-        <Alert severity="error" varient="filled">
+        <Alert ref={alertRef} severity="error" varient="filled">
           게시물이 삭제되었습니다.
         </Alert>
         <Alert severity="success" varient="outlined">
@@ -51,10 +66,9 @@ export default function App() {
           autoHideDuration={2000}
           onClose={() => setOpen(false)}
           message="Note archived">
-          <Alert ref={alertRef} severity="warning">
-            게시물이 삭제됨
-          </Alert>
+          <Alert severity="warning">게시물이 삭제됨</Alert>
         </Snackbar>
+        <Button onClick={() => setOpen(true)}>Show backdrop</Button>
       </section>
     </>
   );
