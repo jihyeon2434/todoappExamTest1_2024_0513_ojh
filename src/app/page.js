@@ -11,7 +11,16 @@ import {
   Alert as MuiAlert,
   Backdrop,
   CircularProgress,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
 import theme from './theme';
 import { FaBars } from 'react-icons/fa';
 
@@ -21,8 +30,38 @@ const Alert = React.forwardRef((props, ref) => {
 
 export default function App() {
   const [open, setOpen] = React.useState(false);
-
+  const [newtoopen, setnewOpen] = React.useState(false);
   const alertRef = React.useRef(null);
+
+  const toggleDrawer = (newOpen) => () => {
+    setnewOpen(newOpen);
+  };
+
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <>
@@ -43,6 +82,12 @@ export default function App() {
           </Toolbar>
         </AppBar>
         <Toolbar />
+        <div>
+          <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+          <Drawer open={newtoopen} onClose={toggleDrawer(false)}>
+            {DrawerList}
+          </Drawer>
+        </div>
         <section className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-text-[5rem]">
           section
         </section>
