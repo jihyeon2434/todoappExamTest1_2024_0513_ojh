@@ -12,6 +12,6 @@ import {
   MenuIcon,
 } from '@mui/material';
 
-export default function Sub() {
-  return <h1>서브페이지</h1>;
+export default function sub() {
+  return <h1>글작성</h1>;
 }
