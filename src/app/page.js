@@ -13,7 +13,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <Button variant="contained" href='sub/'>버튼</Button>
         <Button variant="contained" startIcon={<MdDeleteForever />}>?</Button>
-        
+        <MdDeleteForever /><MdDeleteForever /><MdDeleteForever />
       </ThemeProvider>
     </>
   );
