@@ -204,7 +204,9 @@ const App = () => {
   // const todoState = useTodoStatus(); // 리액트 커스텀 훅, 할일관련 use
   const todosState = useTodoStatus(); // 리액트 커스텀 훅
   React.useEffect(() => {
-    todosState.addTodo('스쿼트');
+    todosState.addTodo(
+      '스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트스쿼트',
+    );
     // todosState.addTodo('벤치');
     // todosState.addTodo('데드');
   }, []);
@@ -287,6 +289,7 @@ const App = () => {
         <Toolbar>
           <div className="tw-flex-1">
             <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
+            rounded
           </div>
           <div className="logo-box">
             <a href="/" className="tw-font-bold">
@@ -313,7 +316,11 @@ const App = () => {
               <div className="tw-flex tw-flex-col tw-gap-2 tw-mt-[30px]">
                 <Chip label={`번호 : ${todo.id}`} variant="outlined"></Chip>
                 <Chip label={`날짜 : ${todo.regDate}`} variant="outlined"></Chip>
-                <Chip label={`할 일 : ${todo.content}`} variant="outlined" color="primary"></Chip>
+                {/* <Chip label={`할 일 : ${todo.content}`} variant="outlined" color="primary"></Chip>
+                 */}
+                <div className="tw-p-10 tw-rounded-[20px] tw-shadow tw-whitespace-pre-wrap tw-leading-relaxed">
+                  할 일 : {todo.content}
+                </div>
               </div>
             </li>
           ))}
