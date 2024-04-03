@@ -36,7 +36,8 @@ function useTodoStatus() {
       content: newContent,
       regDate: dateToStr(new Date()),
     };
-    setTodos((todos) => [...todos, newTodo]);
+    // setTodos((todos) => [...todos, newTodo]);
+    setTodos((todos) => [newTodo, ...todos]); //리스트 역순으로 출력
   };
 
   const removeTodo = (id) => {
@@ -204,7 +205,7 @@ function App() {
   // const todoState = useTodoStatus(); // 리액트 커스텀 훅, 할일관련 use
   const todosState = useTodoStatus(); // 리액트 커스텀 훅
   React.useEffect(() => {
-    todosState.addTodo('스쿼트');
+    todosState.addTodo('스쿼트\n런지');
     todosState.addTodo('벤치');
     todosState.addTodo('데드');
     // todosState.addTodo('벤치');
@@ -322,12 +323,22 @@ function App() {
           {todosState.todos.map((todo) => (
             <li key={todo.id}>
               <div className="tw-flex tw-flex-col tw-gap-2 tw-mt-[30px]">
-                <Chip label={`번호 : ${todo.id}`} variant="outlined" color="secondary"></Chip>
-                <Chip label={`날짜 : ${todo.regDate}`} variant="outlined"></Chip>
+                {/* <Chip label={`번호 : ${todo.id}`} variant="outlined" color="secondary"></Chip>
+                <Chip label={`날짜 : ${todo.regDate}`} variant="outlined"></Chip> */}{' '}
+                <Chip
+                  className="tw-pt-3"
+                  label={`번호 : ${todo.id}`}
+                  variant="outlined"
+                  color="primary"></Chip>
+                <Chip
+                  className="tw-pt-3"
+                  label={`날짜 : ${todo.regDate}`}
+                  variant="outlined"></Chip>
                 {/* <Chip label={`할 일 : ${todo.content}`} variant="outlined" color="primary"></Chip>
                  */}
                 <div className="tw-p-10 tw-rounded-[20px] tw-shadow tw-whitespace-pre-wrap tw-leading-relaxed tw-break-words">
-                  할 일 : {todo.content}
+                  {/* 할 일 : {todo.content} */}
+                  <Box sx={{ color: 'primary.main' }}>{todo.content}</Box>
                 </div>
               </div>
             </li>
