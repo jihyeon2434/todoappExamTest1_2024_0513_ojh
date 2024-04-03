@@ -15,6 +15,7 @@ import {
   Typography,
   Box,
   CssBaseline,
+  TextField,
 } from '@mui/material';
 import theme from './theme';
 import { FaBars } from 'react-icons/fa';
@@ -259,7 +260,7 @@ const App = () => {
             Item Three
           </CustomTabPanel>
         </Box>
-        <section className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-text-[5rem]">
+        <section className="tw-h-screen tw-h-1 tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
           section
         </section>
       </ThemeProvider>
@@ -288,13 +289,15 @@ const App = () => {
           </div>
         </Toolbar>
       </AppBar>
-      <Toolbar />
-      <form onSubmit={onSubmit}>
-        <input type="text" name="title" autoComplete="off" placeholder="할 일 입력해" />
-        <button type="submit">추가</button>
+      <form className="tw-flex tw-flex-col tw-p-4 tw-gap-2" onSubmit={onSubmit}>
+        <TextField id="outlined-basic" label="할 일을 입력해" variant="outlined" />
+        <Button className="tw-font-bold" variant="contained" type="submit">
+          추가
+        </Button>
         <button type="reset">취소</button>
       </form>
       {todoState.todos.length}
+      <Toolbar />
     </>
   );
 };
