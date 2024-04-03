@@ -26,12 +26,12 @@ const useTodoStatus = () => {
   const [todos, setTodos] = React.useState([]);
   const lastTodoIdRef = React.useRef(0);
 
-  const addTodo = (newTitle) => {
+  const addTodo = (newContent) => {
     const id = ++lastTodoIdRef.current;
 
     const newTodo = {
       id,
-      title: newTitle,
+      content: newContent,
       regDate: dateToStr(new Date()),
     };
     setTodos([...todos, newTodo]);
@@ -42,8 +42,8 @@ const useTodoStatus = () => {
     setTodos(newTodos);
   };
 
-  const modifyTodo = (id, title) => {
-    const newTodos = todos.map((todo) => (todo.id != id ? todo : { ...todo, title }));
+  const modifyTodo = (id, content) => {
+    const newTodos = todos.map((todo) => (todo.id != id ? todo : { ...todo, content }));
     setTodos(newTodos);
   };
 
@@ -193,16 +193,11 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
 const App = () => {
   const [open, setOpen] = React.useState(false);
-
   const [value, setValue] = React.useState(0);
   const todoState = useTodoStatus(); // 리액트 커스텀 훅, 할일관련 use
-
-  //사이드바
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   //할일 관련
   const onSubmit = (e) => {
@@ -210,17 +205,22 @@ const App = () => {
 
     const form = e.currentTarget;
 
-    form.title.value = form.title.value.trim();
+    form.content.value = form.content.value.trim();
 
-    if (form.title.value.length == 0) {
+    if (form.content.value.length == 0) {
       alert('할 일 써');
-      form.title.focus();
+      form.content.focus();
       return;
     }
 
-    todoState.addTodo(form.title.value);
-    form.title.value = '';
-    form.title.focus();
+    todoState.addTodo(form.content.value);
+    form.content.value = '';
+    form.content.focus();
+  };
+
+  //사이드바
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -260,7 +260,7 @@ const App = () => {
             Item Three
           </CustomTabPanel>
         </Box>
-        <section className="tw-h-screen tw-h-1 tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
+        <section className="tw-h-1 tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
           section
         </section>
       </ThemeProvider>
@@ -289,15 +289,27 @@ const App = () => {
           </div>
         </Toolbar>
       </AppBar>
+      <Toolbar />
       <form className="tw-flex tw-flex-col tw-p-4 tw-gap-2" onSubmit={onSubmit}>
-        <TextField id="outlined-basic" label="할 일을 입력해" variant="outlined" />
+        <TextField name="content" autoComplete="off" label="할 일을 입력해" variant="outlined" />
         <Button className="tw-font-bold" variant="contained" type="submit">
           추가
         </Button>
-        <button type="reset">취소</button>
       </form>
-      {todoState.todos.length}
-      <Toolbar />
+      할 일 갯수 : {todoState.todos.length}
+      <nav>
+        <ul>
+          {todoState.todos.map((todo) => (
+            <li key={todo.id}>
+              <div className="tw-flex tw-flex-col tw-gap-2">
+                <span>번호 : {todo.id}</span>
+                <span>날짜 : {todo.regDate}</span>
+                <span>할 일 : {todo.content}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </>
   );
 };
