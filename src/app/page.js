@@ -18,7 +18,7 @@ import {
   TextField,
   Chip,
 } from '@mui/material';
-import theme from './theme';
+import RootTheme from './theme';
 import { FaBars } from 'react-icons/fa';
 import Link from 'next/link';
 import dateToStr from './dateUtil';
@@ -237,45 +237,43 @@ function App() {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <AppBar position="fixed">
-          <Toolbar>
-            <div className="tw-flex-1">
-              <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
-            </div>
-            <div className="logo-box">
-              <a href="/" className="tw-font-bold">
-                NOTE!
-              </a>
-            </div>
-            <div className="tw-flex-1 tw-flex tw-justify-end">
-              <a href="/write">글쓰기</a>
-            </div>
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-        <Box sx={{ width: '100%' }} className="tw-justify-center">
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-              <Tab label="Item One" {...a11yProps(0)} />
-              <Tab label="Item Two" {...a11yProps(1)} />
-              <Tab label="Item Three" {...a11yProps(2)} />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={0}>
-            Item One
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            Item Two
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={2}>
-            Item Three
-          </CustomTabPanel>
+      <AppBar position="fixed">
+        <Toolbar>
+          <div className="tw-flex-1">
+            <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
+          </div>
+          <div className="logo-box">
+            <a href="/" className="tw-font-bold">
+              NOTE!
+            </a>
+          </div>
+          <div className="tw-flex-1 tw-flex tw-justify-end">
+            <a href="/write">글쓰기</a>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+      <Box sx={{ width: '100%' }} className="tw-justify-center">
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+            <Tab label="Item One" {...a11yProps(0)} />
+            <Tab label="Item Two" {...a11yProps(1)} />
+            <Tab label="Item Three" {...a11yProps(2)} />
+          </Tabs>
         </Box>
-        <section className="tw-h-1 tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
-          section
-        </section>
-      </ThemeProvider>
+        <CustomTabPanel value={value} index={0}>
+          Item One
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          Item Two
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={2}>
+          Item Three
+        </CustomTabPanel>
+      </Box>
+      <section className="tw-h-1 tw-flex tw-items-center tw-justify-center tw-text-[2rem]">
+        section
+      </section>
       <Button onClick={() => setOpen(true)}>show drawer</Button>
       <Drawer anchor="left" open={open} onClose={() => setOpen(false)}>
         <List>
@@ -336,9 +334,8 @@ function App() {
                   variant="outlined"></Chip>
                 {/* <Chip label={`할 일 : ${todo.content}`} variant="outlined" color="primary"></Chip>
                  */}
-                <div className="tw-p-10 tw-rounded-[20px] tw-shadow tw-whitespace-pre-wrap tw-leading-relaxed tw-break-words">
-                  {/* 할 일 : {todo.content} */}
-                  <Box sx={{ color: 'primary.main' }}>{todo.content}</Box>
+                <div className="tw-p-10 tw-rounded-[20px] tw-shadow tw-whitespace-pre-wrap tw-leading-relaxed tw-break-words tw-text-[--mui-color-warning-main]">
+                  {todo.content}
                 </div>
               </div>
             </li>
@@ -351,6 +348,7 @@ function App() {
 
 export default function themeApp() {
   console.log('실행 2');
+  const theme = RootTheme();
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
