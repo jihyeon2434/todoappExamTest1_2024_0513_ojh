@@ -69,10 +69,10 @@ const NewTodoForm = ({ todosState }) => {
     form.content.value = '';
     form.content.focus();
   };
-
+  //onSubmit으로 전달받음.
   return (
     <>
-      <form onSubmit={(e) => onSubmit(e)}>
+      <form onSubmit={(e) => onSubmit(e)} className="tw-flex tw-flex-col tw-p-4 tw-gap-2">
         <TextField
           minRows={3}
           maxRows={10}
@@ -88,8 +88,8 @@ const NewTodoForm = ({ todosState }) => {
     </>
   );
 };
-
-const TodoListItem = ({ todo, index }) => {
+//setOptionDrawerTodoId 는 몇번째 할 일에 해당하는 번호를 받음.
+const TodoListItem = ({ todo, index, setOptionDrawerTodoId }) => {
   return (
     <>
       <li key={todo.id}>
@@ -119,7 +119,12 @@ const TodoListItem = ({ todo, index }) => {
             <div className="tw-bg-blue-300 tw-flex tw-items-center tw-p-3 tw-flex-grow hover:tw-text-[--mui-color-primary-main] tw-whitespace-pre-wrap tw-leading-relaxed tw-break-words">
               {todo.content}
             </div>
-            <Button className="tw-flex-shrink-0 tw-rounded-[0_10px_10px_0]" color="inherit">
+            <Button
+              onClick={() => {
+                setOptionDrawerTodoId(todo.id);
+              }}
+              className="tw-flex-shrink-0 tw-rounded-[0_10px_10px_0]"
+              color="inherit">
               <FaEllipsisH className="tw-text-[#dcdcdc] tw-text-2xl" />
             </Button>
           </div>
@@ -128,12 +133,21 @@ const TodoListItem = ({ todo, index }) => {
     </>
   );
 };
-
+//Drawer에 setOptionDrawerTodoId줘서 optionDrawerTodoId이 null일때와 아닐때로 구분해서
+//창이 나왔다가 사라지게 한다.
+// TodoListItem에 setOptionDrawerTodoId인 번호값을 줘서 수정하게 한다.
 const TodoList = ({ todosState }) => {
+  const [optionDrawerTodoId, setOptionDrawerTodoId] = React.useState(null);
   return (
     <>
-      <Drawer anchor="{bottom}" open={false} onClose={() => {}}>
+      <Drawer
+        anchor="bottom"
+        open={optionDrawerTodoId !== null}
+        onClose={() => {
+          setOptionDrawerTodoId(null);
+        }}>
         <div className="tw-p-[30px] tw-flex tw-gap-x-[5px]">
+          {optionDrawerTodoId}번 todo에 대한 옵션 Drawer
           <div>수정</div>
           <div>삭제</div>
         </div>
@@ -142,7 +156,12 @@ const TodoList = ({ todosState }) => {
       <nav>
         <ul>
           {todosState.todos.map((todo, index) => (
-            <TodoListItem key={todo.id} todo={todo} index={index} />
+            <TodoListItem
+              key={todo.id}
+              todo={todo}
+              index={index}
+              setOptionDrawerTodoId={setOptionDrawerTodoId}
+            />
           ))}
         </ul>
       </nav>
@@ -151,7 +170,7 @@ const TodoList = ({ todosState }) => {
 };
 
 function App() {
-  const todosState = useTodosState(); // 리액트 커스텀 훅
+  const todosState = useTodosState();
 
   React.useEffect(() => {
     todosState.addTodo('스쿼트\n런지');
