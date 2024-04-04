@@ -18,7 +18,7 @@ import { FaBars, FaCheck, FaEllipsisH } from 'react-icons/fa';
 import RootTheme from './theme';
 import dateToStr from './dateUtil';
 
-function useTodosState() {
+function useTodosStatus() {
   const [todos, setTodos] = React.useState([]);
   const lastTodoIdRef = React.useRef(0);
 
@@ -69,7 +69,7 @@ const NewTodoForm = ({ todosState }) => {
     form.content.value = '';
     form.content.focus();
   };
-  //onSubmit으로 전달받음.
+
   return (
     <>
       <form onSubmit={(e) => onSubmit(e)} className="tw-flex tw-flex-col tw-p-4 tw-gap-2">
@@ -88,8 +88,7 @@ const NewTodoForm = ({ todosState }) => {
     </>
   );
 };
-//setOptionDrawerTodoId 는 몇번째 할 일에 해당하는 번호를 받음.
-// const TodoListItem = ({ todo, index, setOptionDrawerTodoId }) => {
+
 const TodoListItem = ({ todo, index, openDrawer }) => {
   return (
     <>
@@ -122,7 +121,6 @@ const TodoListItem = ({ todo, index, openDrawer }) => {
             </div>
             <Button
               onClick={() => {
-                // setOptionDrawerTodoId(todo.id);
                 openDrawer(todo.id);
               }}
               className="tw-flex-shrink-0 tw-rounded-[0_10px_10px_0]"
@@ -135,26 +133,35 @@ const TodoListItem = ({ todo, index, openDrawer }) => {
     </>
   );
 };
-//Drawer에 setOptionDrawerTodoId줘서 optionDrawerTodoId이 null일때와 아닐때로 구분해서
-//창이 나왔다가 사라지게 한다.
-// TodoListItem에 setOptionDrawerTodoId인 번호값을 줘서 수정하게 한다.
-const TodoList = ({ todosState }) => {
-  const [optionDrawerTodoId, setOptionDrawerTodoId] = React.useState(null);
-  const drawerOpened = React.useMemo(() => optionDrawerTodoId !== null, [optionDrawerTodoId]);
 
-  const openDrawer = (id) => setOptionDrawerTodoId(id);
-  const closeDrawer = () => setOptionDrawerTodoId(null);
+// 해당 todo option에 대한 drawer 열기, 닫기
+function useTodoOptionDrawerStatus() {
+  const [todoId, setTodoId] = React.useState(null);
+
+  const opened = React.useMemo(() => todoId !== null, [todoId]);
+
+  const open = (id) => setTodoId(id);
+  const close = () => setTodoId(null);
+
+  return {
+    todoId,
+    open,
+    close,
+    opened,
+  };
+}
+
+const TodoList = ({ todosState }) => {
+  const todoOptionDrawerStatus = useTodoOptionDrawerStatus();
+
   return (
     <>
-      {/* <Drawer
+      <Drawer
         anchor="bottom"
-        open={optionDrawerTodoId !== null}
-        onClose={() => {
-          setOptionDrawerTodoId(null);
-        }}> */}
-      <Drawer anchor="bottom" open={drawerOpened} onClose={closeDrawer}>
+        open={todoOptionDrawerStatus.opened}
+        onClose={todoOptionDrawerStatus.close}>
         <div className="tw-p-[30px] tw-flex tw-gap-x-[5px]">
-          {optionDrawerTodoId}번 todo에 대한 옵션 Drawer
+          {todoOptionDrawerStatus.todoId}번 todo에 대한 옵션 Drawer
           <div>수정</div>
           <div>삭제</div>
         </div>
@@ -163,13 +170,12 @@ const TodoList = ({ todosState }) => {
       <nav>
         <ul>
           {todosState.todos.map((todo, index) => (
-            // <TodoListItem
-            //   key={todo.id}
-            //   todo={todo}
-            //   index={index}
-            //   setOptionDrawerTodoId={setOptionDrawerTodoId}
-            // />
-            <TodoListItem key={todo.id} todo={todo} index={index} openDrawer={openDrawer} />
+            <TodoListItem
+              key={todo.id}
+              todo={todo}
+              index={index}
+              openDrawer={todoOptionDrawerStatus.open}
+            />
           ))}
         </ul>
       </nav>
@@ -178,7 +184,7 @@ const TodoList = ({ todosState }) => {
 };
 
 function App() {
-  const todosState = useTodosState();
+  const todosState = useTodosStatus();
 
   React.useEffect(() => {
     todosState.addTodo('스쿼트\n런지');
