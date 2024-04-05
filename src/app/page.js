@@ -45,9 +45,28 @@ function useTodosStatus() {
     setTodos(newTodos);
   };
 
+  // modify v1
   const modifyTodo = (id, content) => {
     const newTodos = todos.map((todo) => (todo.id != id ? todo : { ...todo, content }));
     setTodos(newTodos);
+  };
+
+  // modify v2
+  const modifyTodoByIndex = (index, newContent) => {
+    const newTodos = todos.map((todo, _index) =>
+      _index != index ? todo : { ...todo, content: newContent },
+    );
+    setTodos(newTodos);
+  };
+  // modify v2
+  const modifyTodoById = (id, newContent) => {
+    const index = findTodoIndexById(id);
+
+    if (index == -1) {
+      return null;
+    }
+
+    modifyTodoByIndex(index, newContent);
   };
 
   const findTodoIndexById = (id) => {
@@ -70,6 +89,7 @@ function useTodosStatus() {
     removeTodo,
     modifyTodo,
     findTodoById,
+    modifyTodoById,
   };
 }
 
@@ -206,9 +226,12 @@ function EditTodoModal({ status, todosState, todo }) {
       return;
     }
 
-    // todosState.addTodo(form.content.value);
-    // form.content.value = '';
-    // form.content.focus();
+    // modify v1
+    todosState.modifyTodo(todo.id, form.content.value);
+    status.close(); //status에 팝업창을 닫고 열고 하는게 있음.
+    //useTodosStatus()함수에 수정부분 v1 v2존재함.
+    // modify v2
+    // todosState.modifyTodoById(todo.id, form.content.value);
   };
 
   return (
@@ -227,7 +250,7 @@ function EditTodoModal({ status, todosState, todo }) {
               autoComplete="off"
               variant="outlined"
               label="할 일 써"
-              defaultValue={todo?.content} //기존 수정전 데이터값을 보이게 해줌.
+              defaultValue={todo?.content}
             />
             <Button variant="contained" className="tw-font-bold" type="submit">
               수정
@@ -242,7 +265,7 @@ function EditTodoModal({ status, todosState, todo }) {
 function TodoOptionDrawer({ status, todosState }) {
   const editTodoModalStatus = useEditTodoModalStatus();
 
-  const todo = todosState.findTodoById(status.todoId); //기존수정전 값전달.
+  const todo = todosState.findTodoById(status.todoId);
 
   return (
     <>
