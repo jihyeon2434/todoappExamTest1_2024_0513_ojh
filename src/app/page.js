@@ -90,7 +90,7 @@ function useTodosStatus() {
     addTodo,
     removeTodo,
     modifyTodo,
-    findTodoById, // 수정할 id번호 찾기
+    findTodoById,
     modifyTodoById,
   };
 }
@@ -230,13 +230,10 @@ function EditTodoModal({ status, todosState, todo }) {
 
     // modify v1
     todosState.modifyTodo(todo.id, form.content.value);
-    status.close(); //status에 팝업창을 닫고 열고 하는게 있음.
-    //useTodosStatus()함수에 수정부분 v1 v2존재함.
+    status.close();
+
     // modify v2
     // todosState.modifyTodoById(todo.id, form.content.value);
-
-    todosState.removeTodo(todo.id);
-    status.close();
   };
 
   return (
@@ -268,15 +265,16 @@ function EditTodoModal({ status, todosState, todo }) {
 }
 
 function TodoOptionDrawer({ status, todosState }) {
-  //todosState를 통해서 App의 useTodosStatus안에 removeTodo로 접근
   const removeTodo = () => {
     if (confirm(`${status.todoId}번 할 일을 삭제하시겠습니까?`) == false) {
       status.close();
       return;
     }
+
     todosState.removeTodo(status.todoId);
     status.close();
   };
+
   const editTodoModalStatus = useEditTodoModalStatus();
 
   const todo = todosState.findTodoById(status.todoId);
@@ -298,8 +296,8 @@ function TodoOptionDrawer({ status, todosState }) {
             <FaPenToSquare className="block tw-mt-[-5px]" />
           </ListItemButton>
           <ListItemButton
-            onClick={removeTodo} //useTodosStatus의 removetodo로 보내기전 위쪽에 선언한 const removeTodo로 전달.
-            className="tw-p-[15px_20px] tw-flex tw-gap-2 tw-items-center">
+            className="tw-p-[15px_20px] tw-flex tw-gap-2 tw-items-center"
+            onClick={removeTodo}>
             <span>삭제</span>
             <FaTrash className="block tw-mt-[-5px]" />
           </ListItemButton>
@@ -333,9 +331,54 @@ const TodoList = ({ todosState }) => {
   );
 };
 
+function NoticeSnackbar({ status }) {
+  return (
+    <>
+      <Snackbar
+        open={status.opened}
+        autoHideDuration={status.autoHideDuration}
+        onClose={status.close}>
+        <Alert variant={status.variant} severity={status.severity}>
+          {status.msg}
+        </Alert>
+      </Snackbar>
+    </>
+  );
+}
+
+function useNoticeSnackbarStatus() {
+  const [opened, setOpened] = React.useState(false);
+  const [autoHideDuration, setAutoHideDuration] = React.useState(null);
+  const [variant, setVariant] = React.useState(null);
+  const [severity, setSeverity] = React.useState(null);
+  const [msg, setMsg] = React.useState(null);
+
+  const open = (msg, severity = 'success', autoHideDuration = 1000, variant = 'filled') => {
+    setOpened(true);
+    setMsg(msg);
+    setSeverity(severity);
+    setAutoHideDuration(autoHideDuration);
+    setVariant(variant);
+  };
+
+  const close = () => {
+    setOpened(false);
+  };
+
+  return {
+    opened,
+    open,
+    close,
+    autoHideDuration,
+    variant,
+    severity,
+    msg,
+  };
+}
+
 function App() {
   const todosState = useTodosStatus();
-  const [open, setOpen] = React.useState(false); // 스낵바의 open설정?
+  const noticeSnackbarState = useNoticeSnackbarStatus();
 
   React.useEffect(() => {
     todosState.addTodo('스쿼트\n런지');
@@ -345,12 +388,7 @@ function App() {
 
   return (
     <>
-      <Snackbar open={open} autoHideDuration={4000} onClose={() => setOpen(false)}>
-        <Alert variant="filled" severity="sucess">
-          게시물 삭제됨
-        </Alert>
-      </Snackbar>
-      <AppBar position="fixed">
+      <AppBar position="fixed" onClick={() => noticeSnackbarState.open('abc')}>
         <Toolbar>
           <div className="tw-flex-1">
             <FaBars onClick={() => setOpen(true)} className="tw-cursor-pointer" />
@@ -366,6 +404,7 @@ function App() {
         </Toolbar>
       </AppBar>
       <Toolbar />
+      <NoticeSnackbar status={noticeSnackbarState} />
       <NewTodoForm todosState={todosState} />
       <TodoList todosState={todosState} />
     </>
