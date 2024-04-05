@@ -19,6 +19,8 @@ import {
   Divider,
   ListItemButton,
   Modal,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { FaBars, FaCheck, FaEllipsisH, FaTrash } from 'react-icons/fa';
 import { FaPenToSquare } from 'react-icons/fa6';
@@ -258,15 +260,6 @@ function EditTodoModal({ status, todosState, todo }) {
             <Button variant="contained" className="tw-font-bold" type="submit">
               수정
             </Button>
-            <Button
-              onClick={() => {
-                removeTodo(todo.id);
-              }}
-              variant="contained"
-              className="tw-font-bold"
-              type="submit">
-              삭제
-            </Button>
           </form>
         </div>
       </Modal>
@@ -342,6 +335,7 @@ const TodoList = ({ todosState }) => {
 
 function App() {
   const todosState = useTodosStatus();
+  const [open, setOpen] = React.useState(false); // 스낵바의 open설정?
 
   React.useEffect(() => {
     todosState.addTodo('스쿼트\n런지');
@@ -351,6 +345,11 @@ function App() {
 
   return (
     <>
+      <Snackbar open={open} autoHideDuration={4000} onClose={() => setOpen(false)}>
+        <Alert variant="filled" severity="sucess">
+          게시물 삭제됨
+        </Alert>
+      </Snackbar>
       <AppBar position="fixed">
         <Toolbar>
           <div className="tw-flex-1">
