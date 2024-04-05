@@ -95,7 +95,7 @@ function useTodosStatus() {
   };
 }
 
-const NewTodoForm = ({ todosState }) => {
+const NewTodoForm = ({ todosState, noticeSnackbarState }) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -112,6 +112,7 @@ const NewTodoForm = ({ todosState }) => {
     todosState.addTodo(form.content.value);
     form.content.value = '';
     form.content.focus();
+    noticeSnackbarState.open(`내용추가했습니다.`);
   };
 
   return (
@@ -254,7 +255,7 @@ function EditTodoModal({ status, todosState, todo }) {
               label="할 일 써"
               defaultValue={todo?.content}
             />
-            <Button variant="contained" className="tw-font-bold" type="submit">
+            <Button variant="contained" className="tw-font-bold" type="submit" position="fixed">
               수정
             </Button>
           </form>
@@ -264,7 +265,7 @@ function EditTodoModal({ status, todosState, todo }) {
   );
 }
 
-function TodoOptionDrawer({ status, todosState }) {
+function TodoOptionDrawer({ status, todosState, noticeSnackbarState }) {
   const removeTodo = () => {
     if (confirm(`${status.todoId}번 할 일을 삭제하시겠습니까?`) == false) {
       status.close();
@@ -273,6 +274,7 @@ function TodoOptionDrawer({ status, todosState }) {
 
     todosState.removeTodo(status.todoId);
     status.close();
+    noticeSnackbarState.open(`${status.todoId}번을 삭제했습니다.`);
   };
 
   const editTodoModalStatus = useEditTodoModalStatus();
@@ -307,12 +309,16 @@ function TodoOptionDrawer({ status, todosState }) {
   );
 }
 
-const TodoList = ({ todosState }) => {
+const TodoList = ({ todosState, noticeSnackbarState }) => {
   const todoOptionDrawerStatus = useTodoOptionDrawerStatus();
 
   return (
     <>
-      <TodoOptionDrawer status={todoOptionDrawerStatus} todosState={todosState} />
+      <TodoOptionDrawer
+        status={todoOptionDrawerStatus}
+        todosState={todosState}
+        noticeSnackbarState={noticeSnackbarState}
+      />
       <nav>
         할 일 갯수 : {todosState.todos.length}
         <ul>
@@ -332,13 +338,16 @@ const TodoList = ({ todosState }) => {
 };
 
 function NoticeSnackbar({ status }) {
+  const alertRef = React.useRef(null);
+  const noticeSnackbarState = useNoticeSnackbarStatus();
+
   return (
     <>
       <Snackbar
         open={status.opened}
         autoHideDuration={status.autoHideDuration}
         onClose={status.close}>
-        <Alert variant={status.variant} severity={status.severity}>
+        <Alert ref={alertRef} variant={status.variant} severity={status.severity}>
           {status.msg}
         </Alert>
       </Snackbar>
@@ -405,8 +414,8 @@ function App() {
       </AppBar>
       <Toolbar />
       <NoticeSnackbar status={noticeSnackbarState} />
-      <NewTodoForm todosState={todosState} />
-      <TodoList todosState={todosState} />
+      <NewTodoForm todosState={todosState} noticeSnackbarState={noticeSnackbarState} />
+      <TodoList todosState={todosState} noticeSnackbarState={noticeSnackbarState} />
     </>
   );
 }
