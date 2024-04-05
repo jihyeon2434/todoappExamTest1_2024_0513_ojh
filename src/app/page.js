@@ -40,6 +40,8 @@ function useTodosStatus() {
       regDate: dateToStr(new Date()),
     };
     setTodos((todos) => [newTodo, ...todos]);
+
+    return id;
   };
 
   const removeTodo = (id) => {
@@ -109,10 +111,10 @@ const NewTodoForm = ({ todosState, noticeSnackbarState }) => {
       return;
     }
 
-    todosState.addTodo(form.content.value);
+    const newTodoId = todosState.addTodo(form.content.value);
     form.content.value = '';
     form.content.focus();
-    noticeSnackbarState.open(`내용추가했습니다.`);
+    noticeSnackbarState.open(`${newTodoId}번 todo 추가됨`);
   };
 
   return (
@@ -215,7 +217,7 @@ function useEditTodoModalStatus() {
   };
 }
 
-function EditTodoModal({ status, todosState, todo }) {
+function EditTodoModal({ status, todosState, todo, noticeSnackbarState }) {
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -232,6 +234,8 @@ function EditTodoModal({ status, todosState, todo }) {
     // modify v1
     todosState.modifyTodo(todo.id, form.content.value);
     status.close();
+
+    noticeSnackbarState.open(`${todo.id}번 todo 수정됨`);
 
     // modify v2
     // todosState.modifyTodoById(todo.id, form.content.value);
@@ -255,7 +259,7 @@ function EditTodoModal({ status, todosState, todo }) {
               label="할 일 써"
               defaultValue={todo?.content}
             />
-            <Button variant="contained" className="tw-font-bold" type="submit" position="fixed">
+            <Button variant="contained" className="tw-font-bold" type="submit">
               수정
             </Button>
           </form>
@@ -274,7 +278,7 @@ function TodoOptionDrawer({ status, todosState, noticeSnackbarState }) {
 
     todosState.removeTodo(status.todoId);
     status.close();
-    noticeSnackbarState.open(`${status.todoId}번을 삭제했습니다.`);
+    noticeSnackbarState.open(`${status.todoId}번 todo 삭제됨`, 'error');
   };
 
   const editTodoModalStatus = useEditTodoModalStatus();
@@ -283,7 +287,12 @@ function TodoOptionDrawer({ status, todosState, noticeSnackbarState }) {
 
   return (
     <>
-      <EditTodoModal status={editTodoModalStatus} todosState={todosState} todo={todo} />
+      <EditTodoModal
+        status={editTodoModalStatus}
+        todosState={todosState}
+        todo={todo}
+        noticeSnackbarState={noticeSnackbarState}
+      />
       <SwipeableDrawer anchor="top" open={status.opened} onClose={status.close} onOpen={() => {}}>
         <List>
           <ListItem className="tw-flex tw-gap-2 tw-p-[15px]">
@@ -338,16 +347,13 @@ const TodoList = ({ todosState, noticeSnackbarState }) => {
 };
 
 function NoticeSnackbar({ status }) {
-  const alertRef = React.useRef(null);
-  const noticeSnackbarState = useNoticeSnackbarStatus();
-
   return (
     <>
       <Snackbar
         open={status.opened}
         autoHideDuration={status.autoHideDuration}
         onClose={status.close}>
-        <Alert ref={alertRef} variant={status.variant} severity={status.severity}>
+        <Alert variant={status.variant} severity={status.severity}>
           {status.msg}
         </Alert>
       </Snackbar>
@@ -362,7 +368,7 @@ function useNoticeSnackbarStatus() {
   const [severity, setSeverity] = React.useState(null);
   const [msg, setMsg] = React.useState(null);
 
-  const open = (msg, severity = 'success', autoHideDuration = 1000, variant = 'filled') => {
+  const open = (msg, severity = 'success', autoHideDuration = 3000, variant = 'filled') => {
     setOpened(true);
     setMsg(msg);
     setSeverity(severity);
