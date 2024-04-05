@@ -88,7 +88,7 @@ function useTodosStatus() {
     addTodo,
     removeTodo,
     modifyTodo,
-    findTodoById,
+    findTodoById, // 수정할 id번호 찾기
     modifyTodoById,
   };
 }
@@ -232,6 +232,9 @@ function EditTodoModal({ status, todosState, todo }) {
     //useTodosStatus()함수에 수정부분 v1 v2존재함.
     // modify v2
     // todosState.modifyTodoById(todo.id, form.content.value);
+
+    todosState.removeTodo(todo.id);
+    status.close();
   };
 
   return (
@@ -254,6 +257,15 @@ function EditTodoModal({ status, todosState, todo }) {
             />
             <Button variant="contained" className="tw-font-bold" type="submit">
               수정
+            </Button>
+            <Button
+              onClick={() => {
+                removeTodo(todo.id);
+              }}
+              variant="contained"
+              className="tw-font-bold"
+              type="submit">
+              삭제
             </Button>
           </form>
         </div>
