@@ -275,6 +275,15 @@ function EditTodoModal({ status, todosState, todo }) {
 }
 
 function TodoOptionDrawer({ status, todosState }) {
+  //todosState를 통해서 App의 useTodosStatus안에 removeTodo로 접근
+  const removeTodo = () => {
+    if (confirm(`${status.todoId}번 할 일을 삭제하시겠습니까?`) == false) {
+      status.close();
+      return;
+    }
+    todosState.removeTodo(status.todoId);
+    status.close();
+  };
   const editTodoModalStatus = useEditTodoModalStatus();
 
   const todo = todosState.findTodoById(status.todoId);
@@ -295,7 +304,9 @@ function TodoOptionDrawer({ status, todosState }) {
             <span>수정</span>
             <FaPenToSquare className="block tw-mt-[-5px]" />
           </ListItemButton>
-          <ListItemButton className="tw-p-[15px_20px] tw-flex tw-gap-2 tw-items-center">
+          <ListItemButton
+            onClick={removeTodo} //useTodosStatus의 removetodo로 보내기전 위쪽에 선언한 const removeTodo로 전달.
+            className="tw-p-[15px_20px] tw-flex tw-gap-2 tw-items-center">
             <span>삭제</span>
             <FaTrash className="block tw-mt-[-5px]" />
           </ListItemButton>
