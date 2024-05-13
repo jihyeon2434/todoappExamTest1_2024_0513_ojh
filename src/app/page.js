@@ -138,20 +138,20 @@ const NewTodoForm = ({ todosState, noticeSnackbarState }) => {
 };
 
 const TodoListItem = ({ todo, index, openDrawer, todosState }) => {
-  const [confirmDialogOpen, setConfirmDialogOpen] = React.useState(false);
+  const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
 
   const handleCheckClick = () => {
-    setConfirmDialogOpen(true);
+    setConfirmOpen(true);
   };
 
   const handleConfirmComplete = () => {
     setCompleted(true);
-    setConfirmDialogOpen(false);
+    setConfirmOpen(false);
   };
 
   const handleCancelComplete = () => {
-    setConfirmDialogOpen(false);
+    setConfirmOpen(false);
   };
 
   return (
@@ -195,75 +195,11 @@ const TodoListItem = ({ todo, index, openDrawer, todosState }) => {
           </div>
         </div>
       </li>
-      <Modal open={confirmDialogOpen} onClose={handleCancelComplete}>
-        <div className="tw-bg-white tw-p-10 tw-rounded-[20px] tw-w-full tw-max-w-lg">
-          <div className="tw-text-2xl tw-font-bold tw-mb-4">완료하시겠습니까?</div>
-          <div className="tw-flex tw-gap-4">
-            <Button variant="contained" color="primary" onClick={handleConfirmComplete}>
-              완료
-            </Button>
-            <Button variant="contained" onClick={handleCancelComplete}>
-              취소
-            </Button>
-          </div>
-        </div>
-      </Modal>
+     
     </>
   );
 };
 
-// const TodoListItem = ({ todo, index, openDrawer, todosState }) => {
-//   const [checked, setChecked] = React.useState(false);
-
-//   const handleCheckClick = () => {
-//     setChecked(!checked);
-//   };
-//   return (
-//     <>
-//       <li key={todo.id}>
-//         <div className="tw-flex tw-flex-col tw-gap-2 tw-mt-3">
-//           <div className="tw-flex tw-gap-x-2 tw-font-bold">
-//             <Chip className="tw-pt-[3px]" label={`번호 : ${todo.id}`} variant="outlined" />
-//             <Chip
-//               className="tw-pt-[3px]"
-//               label={`날짜 : ${todo.regDate}`}
-//               variant="outlined"
-//               color="primary"
-//             />
-//           </div>
-//           <div className="tw-rounded-[10px] tw-shadow tw-flex tw-text-[14px] tw-min-h-[80px]">
-//             <Button
-//               onClick={handleCheckClick}
-//               className="tw-flex-shrink-0 tw-rounded-[10px_0_0_10px]"
-//               color="inherit">
-//               <FaCheck
-//                 className={classNames(
-//                   'tw-text-3xl',
-//                   {
-//                     'tw-text-[--mui-color-primary-main]': checked,
-//                   },
-//                   { 'tw-text-[#dcdcdc]': !checked },
-//                 )}
-//               />
-//             </Button>
-//             <div className="tw-bg-[#dcdcdc] tw-w-[2px] tw-h-[60px] tw-self-center"></div>
-//             <div className="tw-bg-blue-300 tw-flex tw-items-center tw-p-3 tw-flex-grow hover:tw-text-[--mui-color-primary-main] tw-whitespace-pre-wrap tw-leading-relaxed tw-break-words">
-//               {todo.content}
-//             </div>
-//             <Button
-//               onClick={() => {
-//                 openDrawer(todo.id);
-//               }}
-//               className="tw-flex-shrink-0 tw-rounded-[0_10px_10px_0]"
-//               color="inherit">
-//               <FaEllipsisH className="tw-text-[#dcdcdc] tw-text-2xl" />
-//             </Button>
-//           </div>
-//         </div>
-//       </li>
-//     </>
-//   );
-// };
 
 // 해당 todo option에 대한 drawer 열기, 닫기
 function useTodoOptionDrawerStatus() {
